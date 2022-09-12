@@ -40,3 +40,16 @@ python -m uvicorn main:app --reload
 Interactive Docs (Swagger UI) - http://127.0.0.1:8000/docs
 
 테스트할 때는 직접 API call도 할 수 있는 interactive docs가 좋다고 생각한다.
+
+
+# FastAPI-users 설치
+
+```
+pip install fastapi-users[beanie]
+```
+
+# env 파일 읽도록 설정
+
+```
+pip install pydantic[dotenv]
+```
