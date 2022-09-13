@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import storage from 'libs/storage';
 
 const AuthContext = React.createContext(null);
 
@@ -10,11 +11,14 @@ export const useAuth = () => {
 export const AuthProvider = ({ afterLogin, children }) => {
   const navigate = useNavigate();
 
-  const [token, setToken] = useState(null);
+  const TOKEN_NAME = 'access_token';
+
+  const token = useMemo(() => {
+    return storage.get(TOKEN_NAME);
+  }, [storage]);
 
   const storeToken = (accessToken) => {
-    localStorage.setItem('access_token', JSON.stringify(accessToken || {}));
-    setToken(accessToken);
+    storage.set(TOKEN_NAME, accessToken);
   };
 
   const handleLogin = (token) => {
@@ -39,6 +43,8 @@ export const AuthProvider = ({ afterLogin, children }) => {
 
 export const ProtectedRoute = ({ redirectTo, children }) => {
   const { token } = useAuth();
+
+  console.log('token', token);
 
   if (!token) {
     return <Navigate to={redirectTo || '/'} replace />;
