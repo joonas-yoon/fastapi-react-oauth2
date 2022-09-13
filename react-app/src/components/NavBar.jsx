@@ -14,7 +14,7 @@ const NavLink = ({ href, title, ...props }) => (
 );
 
 const NavBar = ({ links }) => (
-  <AppBar position="static">
+  <AppBar position="relative">
     <Toolbar>
       {links &&
         links.map((link) => (
