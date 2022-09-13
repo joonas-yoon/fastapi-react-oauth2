@@ -4,12 +4,16 @@ import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { customAxios } from 'libs/customAxios';
 import qs from 'qs';
+import { useAuth } from 'components/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [serverResponse, setServerResponse] = useState({
     status: null,
     message: '',
   });
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const onSubmit = (username, password) => {
     const formData = qs.stringify({
@@ -27,12 +31,12 @@ const Login = () => {
       })
       .then((response) => {
         console.log('Response', response);
-        const { accessToken } = response.data;
-        localStorage.setItem('access_token', JSON.stringify(accessToken || {}));
+        const { access_token } = response.data;
         setServerResponse({
           status: 'success',
           message: null,
         });
+        login(access_token);
       })
       .catch(({ message }) => {
         console.error(`Failed to request : ${message}`);
