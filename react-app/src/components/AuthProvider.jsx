@@ -12,7 +12,6 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ afterLogin, children }) => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const TOKEN_NAME = 'access_token';
 
@@ -41,10 +40,11 @@ export const AuthProvider = ({ afterLogin, children }) => {
   const handleLogin = (token) => {
     console.log('handleLogin', token);
     storeToken(token);
-    const targetLocation = location.state?.from;
-    const targetUrl = targetLocation?.pathname + targetLocation?.search + targetLocation?.hash;
-    const redirectUrl = afterLogin || targetUrl || '/';
-    navigate(redirectUrl);
+    const { location } = window;
+    const url = new URL(location.href);
+    const next = url.searchParams.get('next');
+    const redirectUrl = afterLogin || next || '/';
+    navigate(redirectUrl === '/login' ? '/' : redirectUrl);
   };
 
   const handleLogout = () => {
@@ -69,7 +69,12 @@ export const ProtectedRoute = ({ redirectTo, children }) => {
   console.log('token', token, 'isAuthenticated', isAuthenticated);
 
   if (!isAuthenticated) {
-    return <Navigate to={redirectTo || '/'} replace state={{ from: location }} />;
+    const origin = location?.origin || window.location.origin;
+    const targetUrl = new URL(redirectTo || '/', origin);
+    const next = location?.pathname + location?.search + location?.hash;
+    targetUrl.searchParams.append('next', encodeURI(next));
+    const nextUrl = targetUrl.toString().replace(targetUrl.origin, '');
+    return <Navigate to={nextUrl || '/'} replace />;
   }
 
   return children;
