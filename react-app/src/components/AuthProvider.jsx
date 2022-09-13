@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 
 import { customAxios } from 'libs/customAxios';
@@ -12,6 +12,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ afterLogin, children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const TOKEN_NAME = 'access_token';
 
@@ -40,7 +41,10 @@ export const AuthProvider = ({ afterLogin, children }) => {
   const handleLogin = (token) => {
     console.log('handleLogin', token);
     storeToken(token);
-    navigate(afterLogin);
+    const targetLocation = location.state?.from;
+    const targetUrl = targetLocation?.pathname + targetLocation?.search + targetLocation?.hash;
+    const redirectUrl = afterLogin || targetUrl || '/';
+    navigate(redirectUrl);
   };
 
   const handleLogout = () => {
@@ -60,11 +64,12 @@ export const AuthProvider = ({ afterLogin, children }) => {
 
 export const ProtectedRoute = ({ redirectTo, children }) => {
   const { token, isAuthenticated } = useAuth();
+  const location = useLocation();
 
   console.log('token', token, 'isAuthenticated', isAuthenticated);
 
   if (!isAuthenticated) {
-    return <Navigate to={redirectTo || '/'} replace />;
+    return <Navigate to={redirectTo || '/'} replace state={{ from: location }} />;
   }
 
   return children;

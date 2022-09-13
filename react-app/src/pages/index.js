@@ -1,5 +1,5 @@
 import { default as Home } from './Home';
-import { default as Login } from './Login';
+import { Login, Logout } from './Auth';
 import { default as MyPage } from './MyPage';
 
-export { Home, Login, MyPage };
+export { Home, Login, Logout, MyPage };

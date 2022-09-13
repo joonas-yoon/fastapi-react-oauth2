@@ -1,5 +1,5 @@
 import LoginForm, { LoginContainer, SubTitle, Title } from 'components/LoginForm';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Box } from '@mui/material';
 import { customAxios } from 'libs/customAxios';
@@ -7,12 +7,11 @@ import qs from 'qs';
 import { useAuth } from 'components/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+export const Login = () => {
   const [serverResponse, setServerResponse] = useState({
     status: null,
     message: '',
   });
-  const navigate = useNavigate();
   const { login } = useAuth();
 
   const onSubmit = (username, password) => {
@@ -63,4 +62,15 @@ const Login = () => {
   );
 };
 
-export default Login;
+export const Logout = () => {
+  const location = useNavigate();
+  useEffect(() => {
+    location(-1);
+  }, [location]);
+  return null;
+};
+
+export default {
+  Login,
+  Logout,
+};
