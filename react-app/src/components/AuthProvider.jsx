@@ -1,5 +1,7 @@
-import React, { useContext, useMemo, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+
+import { customAxios } from 'libs/customAxios';
 import storage from 'libs/storage';
 
 const AuthContext = React.createContext(null);
@@ -16,6 +18,20 @@ export const AuthProvider = ({ afterLogin, children }) => {
   const token = useMemo(() => {
     return storage.get(TOKEN_NAME);
   }, [storage]);
+
+  const [isAuthenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    customAxios
+      .get('/users/me')
+      .then((res) => {
+        console.log(res.response);
+        setAuthenticated(true);
+      })
+      .catch(() => {
+        setAuthenticated(false);
+      });
+  }, [token]);
 
   const storeToken = (accessToken) => {
     storage.set(TOKEN_NAME, accessToken);
@@ -34,6 +50,7 @@ export const AuthProvider = ({ afterLogin, children }) => {
 
   const value = {
     token,
+    isAuthenticated,
     login: handleLogin,
     logout: handleLogout,
   };
@@ -42,11 +59,11 @@ export const AuthProvider = ({ afterLogin, children }) => {
 };
 
 export const ProtectedRoute = ({ redirectTo, children }) => {
-  const { token } = useAuth();
+  const { token, isAuthenticated } = useAuth();
 
-  console.log('token', token);
+  console.log('token', token, 'isAuthenticated', isAuthenticated);
 
-  if (!token) {
+  if (!isAuthenticated) {
     return <Navigate to={redirectTo || '/'} replace />;
   }
 
