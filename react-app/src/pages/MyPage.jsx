@@ -1,11 +1,14 @@
-import React from 'react';
 import { Container } from '@mui/material';
+import { ProtectedRoute } from 'components/AuthProvider';
+import React from 'react';
 
 const MyPage = () => {
   return (
-    <Container>
-      <h1>My Page</h1>
-    </Container>
+    <ProtectedRoute redirectTo="/login">
+      <Container>
+        <h1>My Page</h1>
+      </Container>
+    </ProtectedRoute>
   );
 };
 

@@ -36,3 +36,13 @@ export const AuthProvider = ({ afterLogin, children }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+export const ProtectedRoute = ({ redirectTo, children }) => {
+  const { token } = useAuth();
+
+  if (!token) {
+    return <Navigate to={redirectTo || '/'} replace />;
+  }
+
+  return children;
+};
