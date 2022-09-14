@@ -16,26 +16,25 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ afterLogin, children }) => {
   const navigate = useNavigate();
-
-  const TOKEN_NAME = 'access_token';
-
-  const token = useMemo(() => {
-    return storage.get(TOKEN_NAME);
-  }, [storage]);
-
   const [isAuthenticated, setAuthenticated] = useState(false);
+  const location = useLocation();
+
+  const getAuthenticated = async () => {
+    const result = await customAxios()
+      .get('auth/authenticated-route')
+      .then(() => true)
+      .catch(() => false);
+    setAuthenticated(result);
+  };
 
   useEffect(() => {
-    customAxios()
-      .get('/users/me')
-      .then((res) => {
-        console.log(res.response);
-        setAuthenticated(true);
-      })
-      .catch(() => {
-        setAuthenticated(false);
-      });
-  }, [token]);
+    getAuthenticated();
+  }, [location]);
+
+  const TOKEN_NAME = 'access_token';
+  const token = storage.get(TOKEN_NAME);
+
+  console.log('[Provider] token:', token);
 
   const storeToken = (accessToken) => {
     storage.set(TOKEN_NAME, accessToken);
@@ -48,7 +47,7 @@ export const AuthProvider = ({ afterLogin, children }) => {
     const url = new URL(location.href);
     const next = url.searchParams.get('next');
     const redirectUrl = afterLogin || next || '/';
-    navigate(redirectUrl === '/login' ? '/' : redirectUrl);
+    navigate(redirectUrl);
   };
 
   const handleLogout = () => {
@@ -67,10 +66,10 @@ export const AuthProvider = ({ afterLogin, children }) => {
 };
 
 export const ProtectedRoute = ({ redirectTo, children }) => {
-  const { token, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
 
-  console.log('token', token, 'isAuthenticated', isAuthenticated);
+  console.log('isAuthenticated', isAuthenticated);
 
   if (!isAuthenticated) {
     const origin = location?.origin || window.location.origin;

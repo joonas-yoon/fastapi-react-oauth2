@@ -12,8 +12,10 @@ export const Login = () => {
     status: null,
     message: '',
   });
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const location = useLocation();
+
+  console.log('Component rendered: isAuthenticated', isAuthenticated);
 
   const onSubmit = (username, password) => {
     const formData = qs.stringify({
