@@ -1,13 +1,17 @@
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { customAxios } from 'libs/customAxios';
 import storage from 'libs/storage';
 
-const AuthContext = React.createContext(null);
+const AuthContext = createContext(null);
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const value = useContext(AuthContext);
+  if (value === null) {
+    throw new Error('useAuth should be used within AuthProvider');
+  }
+  return value;
 };
 
 export const AuthProvider = ({ afterLogin, children }) => {
