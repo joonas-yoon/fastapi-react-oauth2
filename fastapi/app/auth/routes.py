@@ -1,10 +1,8 @@
 from fastapi import APIRouter, Depends
-from .models import User, UserCreate, UserRead, UserUpdate
-from .libs import auth_backend, current_active_user, fastapi_users
 
-CLIENT_REDIRECT_URL = "http://localhost:3000/auth/google"
-GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-GOOGLE_TOKEN_API = "https://oauth2.googleapis.com/token"
+from .google.routes import router as get_google_auth_router
+from .libs import auth_backend, current_active_user, fastapi_users
+from .models import User, UserCreate, UserRead, UserUpdate
 
 router = APIRouter()
 
@@ -20,6 +18,7 @@ routers = [
     (get_register_router, dict(prefix="/auth", tags=["auth"])),
     (get_reset_password_router, dict(prefix="/auth", tags=["auth"])),
     (get_verify_router, dict(prefix="/auth", tags=["auth"])),
+    (get_google_auth_router, dict(prefix="/auth", tags=["auth"])),
     (get_users_router, dict(prefix="/users", tags=["users"])),
 ]
 
