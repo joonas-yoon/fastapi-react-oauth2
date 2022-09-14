@@ -18,14 +18,19 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 
 export const LoginContainer = styled(Container)`
-  width: 40ch;
+  width: 100%;
+  min-width: 320px;
+  max-width: 425px;
   margin-top: 2em;
   margin-left: auto;
   margin-right: auto;
-  padding: 1.5em;
-  box-shadow: 0px 2px 2px -1px rgb(0 0 0 / 20%), 0px 1px 2px 0px rgb(0 0 0 / 12%),
-    0px 3px 5px 0px rgb(0 0 0 / 10%);
 `;
+
+export const LoginCard = styled('div')({
+  padding: '1.5em',
+  boxShadow:
+    '0px 2px 2px -1px rgb(0 0 0 / 20%), 0px 1px 2px 0px rgb(0 0 0 / 12%), 0px 3px 5px 0px rgb(0 0 0 / 10%);',
+});
 
 const validate = ({ username, password }) => {
   if (username.length < 1) {

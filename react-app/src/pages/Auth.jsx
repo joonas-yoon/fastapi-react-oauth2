@@ -1,11 +1,11 @@
-import LoginForm, { LoginContainer, SubTitle, Title } from 'components/LoginForm';
+import { Alert, Box } from '@mui/material';
+import LoginForm, { LoginCard, LoginContainer, SubTitle, Title } from 'components/LoginForm';
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Box } from '@mui/material';
 import { customAxios } from 'libs/customAxios';
 import qs from 'qs';
 import { useAuth } from 'components/AuthProvider';
-import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
   const [serverResponse, setServerResponse] = useState({
@@ -13,6 +13,7 @@ export const Login = () => {
     message: '',
   });
   const { login } = useAuth();
+  const location = useLocation();
 
   const onSubmit = (username, password) => {
     const formData = qs.stringify({
@@ -49,15 +50,27 @@ export const Login = () => {
 
   return (
     <LoginContainer>
-      <Box
-        sx={{
-          marginBottom: '1em',
-        }}
-      >
-        <Title>Login</Title>
-        <SubTitle>Welcome back! Sign in to continue</SubTitle>
-      </Box>
-      <LoginForm onSubmit={onSubmit} serverResponse={serverResponse} />
+      {location.state?.from && (
+        <Alert
+          severity="error"
+          sx={{
+            marginBottom: '1em',
+          }}
+        >
+          This page requires login to access.
+        </Alert>
+      )}
+      <LoginCard>
+        <Box
+          sx={{
+            marginBottom: '1em',
+          }}
+        >
+          <Title>Login</Title>
+          <SubTitle>Welcome back! Sign in to continue</SubTitle>
+        </Box>
+        <LoginForm onSubmit={onSubmit} serverResponse={serverResponse} />
+      </LoginCard>
     </LoginContainer>
   );
 };

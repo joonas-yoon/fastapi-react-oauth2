@@ -74,7 +74,7 @@ export const ProtectedRoute = ({ redirectTo, children }) => {
     const next = location?.pathname + location?.search + location?.hash;
     targetUrl.searchParams.append('next', encodeURI(next));
     const nextUrl = targetUrl.toString().replace(targetUrl.origin, '');
-    return <Navigate to={nextUrl || '/'} replace />;
+    return <Navigate to={nextUrl || '/'} replace state={{ from: location }} />;
   }
 
   return children;
