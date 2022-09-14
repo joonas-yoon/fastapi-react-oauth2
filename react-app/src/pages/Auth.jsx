@@ -24,7 +24,7 @@ export const Login = () => {
       status: 'waiting',
     });
 
-    customAxios
+    customAxios()
       .post('/auth/jwt/login', formData, {
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
       })

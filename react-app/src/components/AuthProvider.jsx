@@ -22,7 +22,7 @@ export const AuthProvider = ({ afterLogin, children }) => {
   const [isAuthenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    customAxios
+    customAxios()
       .get('/users/me')
       .then((res) => {
         console.log(res.response);

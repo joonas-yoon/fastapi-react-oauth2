@@ -8,11 +8,25 @@ const getAccessToken = (): string => {
   return storage.get('access_token', null) as string;
 };
 
-export const customAxios: AxiosInstance = axios.create({
-  baseURL: `${API_SERVER}`,
-  headers: {
-    access_token: getAccessToken(),
-    Authorization: `Bearer ${getAccessToken()}`,
-  },
-  withCredentials: true,
-});
+export const createAxios = (configs?: object): AxiosInstance => {
+  const INITIAL_CONFIGS = {
+    baseURL: `${API_SERVER}`,
+    withCredentials: true,
+    headers: {},
+  };
+  return axios.create(Object.assign(INITIAL_CONFIGS, configs));
+};
+
+export const customAxios = (configs?: object): AxiosInstance => {
+  return createAxios(
+    Object.assign(
+      {
+        headers: {
+          access_token: getAccessToken(),
+          Authorization: `Bearer ${getAccessToken()}`,
+        },
+      },
+      configs,
+    ),
+  );
+};
