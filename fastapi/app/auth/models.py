@@ -9,11 +9,6 @@ from fastapi_users import schemas
 from fastapi_users.db import BeanieBaseUser, BaseOAuthAccount
 
 
-class SocialScope(str, Enum):
-    email: str = "email"
-    google: str = "google"
-
-
 class OAuthAccount(BaseOAuthAccount):
     pass
 
