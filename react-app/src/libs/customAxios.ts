@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
 import storage from 'libs/storage';
+import { mergeDeep } from './commons';
 
 const API_SERVER = 'http://localhost:8000/';
 
@@ -18,8 +19,9 @@ export const createAxios = (configs?: object): AxiosInstance => {
 };
 
 export const customAxios = (configs?: object): AxiosInstance => {
-  return createAxios(
-    Object.assign(
+  const overrides = Object.assign(
+    {},
+    mergeDeep(
       {
         headers: {
           access_token: getAccessToken(),
@@ -29,4 +31,5 @@ export const customAxios = (configs?: object): AxiosInstance => {
       configs,
     ),
   );
+  return createAxios(overrides);
 };

@@ -27,10 +27,10 @@ export const Login = () => {
       status: 'waiting',
     });
 
-    customAxios()
-      .post('/auth/jwt/login', formData, {
-        headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      })
+    customAxios({
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    })
+      .post('/auth/jwt/login', formData)
       .then((response) => {
         console.log('Response', response);
         const { access_token } = response.data;
