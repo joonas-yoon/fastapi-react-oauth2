@@ -1,14 +1,14 @@
 import { Alert, Box, LinearProgress, Stack, Typography } from '@mui/material';
-import LoginForm, { LoginCard, LoginContainer, SubTitle, Title } from 'components/LoginForm';
-import React, { useEffect, useState } from 'react';
+import LoginForm, { LoginContainer, SubTitle, Title } from 'components/LoginForm';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { FcGoogle } from 'react-icons/fc';
 import { OAuth } from 'components/Buttons';
 import { customAxios } from 'libs/customAxios';
 import qs from 'qs';
-import storage from 'libs/storage';
 import { useAuth } from 'providers/AuthProvider';
+import { Card } from 'components/Card';
 
 export const Login = () => {
   const [serverResponse, setServerResponse] = useState({
@@ -42,7 +42,7 @@ export const Login = () => {
           status: 'success',
           message: null,
         });
-        login(access_token);
+        login({ token: access_token });
       })
       .catch(({ message }) => {
         console.error(`Failed to request : ${message}`);
@@ -106,7 +106,7 @@ export const Login = () => {
           {location.state?.message || 'This page requires login to access'}
         </Alert>
       )}
-      <LoginCard>
+      <Card>
         <LoginHeader />
         {isLoginWithEmail ? (
           <>
@@ -123,7 +123,7 @@ export const Login = () => {
             <OAuth.EmailButton onClick={onClickEmailButton} />
           </Stack>
         )}
-      </LoginCard>
+      </Card>
     </LoginContainer>
   );
 };
@@ -145,7 +145,10 @@ const CallbackGoogle = () => {
       .get('/auth/google/callback' + location.search)
       .then(({ data }) => {
         console.log('Recieved data', data);
-        login(data.access_token);
+        login({
+          token: data.access_token,
+          redirectUrl: '/my',
+        });
       })
       .catch(({ response }) => {
         console.error(response);
@@ -161,13 +164,13 @@ const CallbackGoogle = () => {
 
   return (
     <LoginContainer>
-      <LoginCard>
+      <Card>
         <Box sx={{ width: '100%', textAlign: 'center', fontSize: '5em', marginBottom: '10px' }}>
           <FcGoogle />
           <LinearProgress />
         </Box>
         <Typography>Waiting for Google Sign-in to complete...</Typography>
-      </LoginCard>
+      </Card>
     </LoginContainer>
   );
 };

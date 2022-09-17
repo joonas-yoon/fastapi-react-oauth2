@@ -49,14 +49,13 @@ export const AuthProvider = ({ afterLogin, children }) => {
 
   console.log('[Provider] token:', getToken());
 
-  const handleLogin = (token) => {
+  const handleLogin = ({ token, redirectUrl }) => {
     console.log('handleLogin', token);
     updateToken(token);
     const { location } = window;
     const url = new URL(location.href);
     const next = url.searchParams.get('next');
-    const redirectUrl = afterLogin || next || '/';
-    navigate(redirectUrl);
+    navigate(redirectUrl || afterLogin || next || '/');
   };
 
   const handleLogout = () => {

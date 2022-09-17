@@ -26,13 +26,6 @@ export const LoginContainer = styled(Container)`
   margin-right: auto;
 `;
 
-export const LoginCard = styled('div')({
-  padding: '1.5em',
-  border: '1px solid rgb(128, 128, 128, .2)',
-  borderRadius: '4px',
-  boxShadow: '0px 0px 1px 0px rgb(128, 128, 128, 0.1)',
-});
-
 const validate = ({ username, password }) => {
   if (username.length < 1) {
     return 'Username is required.';
