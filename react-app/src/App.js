@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Home, Login, Logout, MyPage } from './pages';
 
-import { AuthProvider } from 'components/AuthProvider';
+import { AuthProvider } from 'providers/AuthProvider';
 import Navbar from 'components/NavBar';
 
 const links = [

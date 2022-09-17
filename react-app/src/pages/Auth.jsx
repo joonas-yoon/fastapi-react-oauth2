@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { customAxios } from 'libs/customAxios';
 import qs from 'qs';
-import { useAuth } from 'components/AuthProvider';
+import { useAuth } from 'providers/AuthProvider';
 
 export const Login = () => {
   const [serverResponse, setServerResponse] = useState({

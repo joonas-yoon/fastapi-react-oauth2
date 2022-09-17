@@ -1,5 +1,5 @@
 import { Container } from '@mui/material';
-import { ProtectedRoute } from 'components/AuthProvider';
+import { ProtectedRoute } from 'providers/AuthProvider';
 import React from 'react';
 
 const MyPage = () => {
