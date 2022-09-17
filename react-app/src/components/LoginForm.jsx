@@ -28,8 +28,9 @@ export const LoginContainer = styled(Container)`
 
 export const LoginCard = styled('div')({
   padding: '1.5em',
-  boxShadow:
-    '0px 2px 2px -1px rgb(0 0 0 / 20%), 0px 1px 2px 0px rgb(0 0 0 / 12%), 0px 3px 5px 0px rgb(0 0 0 / 10%);',
+  border: '1px solid rgb(128, 128, 128, .2)',
+  borderRadius: '4px',
+  boxShadow: '0px 0px 1px 0px rgb(128, 128, 128, 0.1)',
 });
 
 const validate = ({ username, password }) => {

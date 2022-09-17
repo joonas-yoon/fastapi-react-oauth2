@@ -27,10 +27,9 @@ class Settings(BaseSettings):
     ORIGINS: List[str] = Field(['http://localhost'], env='ORIGINS')
     ALLOWED_HOSTS: List[str] = Field(..., env='ALLOWED_HOSTS')
 
-    CLIENT_REDIRECT_URL: str = "http://localhost:3000/auth/google"
-
     GOOGLE_CLIENT_ID: str = None
     GOOGLE_CLIENT_SECRET: str = None
+    GOOGLE_CALLBACK_URL: str = None
 
     class Config:
         env_file = get_env_file()

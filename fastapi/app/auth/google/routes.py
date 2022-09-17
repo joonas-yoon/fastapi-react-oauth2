@@ -26,7 +26,7 @@ def google_authorize_url(request: Request):
     payload = dict(
         response_type="code",
         client_id=Configs.GOOGLE_CLIENT_ID,
-        redirect_uri=Configs.CLIENT_REDIRECT_URL,
+        redirect_uri=Configs.GOOGLE_CALLBACK_URL,
         state=secrets.token_urlsafe(64),
         scope=" ".join(scopes),
     )
@@ -42,7 +42,7 @@ async def google_access_token(request: Request, code: str = ""):
         "client_secret": Configs.GOOGLE_CLIENT_SECRET,
         "code": code,
         "grant_type": "authorization_code",
-        "redirect_uri": Configs.CLIENT_REDIRECT_URL
+        "redirect_uri": Configs.GOOGLE_CALLBACK_URL
     }
 
     headers = {
