@@ -1,11 +1,13 @@
-import { Alert, Box, Stack } from '@mui/material';
+import { Alert, Box, LinearProgress, Stack, Typography } from '@mui/material';
 import LoginForm, { LoginCard, LoginContainer, SubTitle, Title } from 'components/LoginForm';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { FcGoogle } from 'react-icons/fc';
 import { OAuth } from 'components/Buttons';
 import { customAxios } from 'libs/customAxios';
 import qs from 'qs';
+import storage from 'libs/storage';
 import { useAuth } from 'providers/AuthProvider';
 
 export const Login = () => {
@@ -101,7 +103,7 @@ export const Login = () => {
             marginBottom: '1em',
           }}
         >
-          This page requires login to access.
+          {location.state?.message || 'This page requires login to access'}
         </Alert>
       )}
       <LoginCard>
@@ -131,28 +133,43 @@ export const Logout = () => {
   useEffect(() => {
     location(-1);
   }, [location]);
-  return null;
 };
 
 const CallbackGoogle = () => {
-  console.log('Google');
   const location = useLocation();
-  if (location.search) {
-    const params = location.search.substring(1).split('&');
-    return (
-      <>
-        {params && (
-          <pre>
-            {params.map((s) => {
-              const [key, value] = s.split('=');
-              return `${key}: ${value}\n`;
-            })}
-          </pre>
-        )}
-      </>
-    );
-  }
-  return 'Failed';
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  useEffect(() => {
+    customAxios()
+      .get('/auth/google/token' + location.search)
+      .then(({ data }) => {
+        console.log('Recieved data', data);
+        login(data.access_token);
+      })
+      .catch(({ response }) => {
+        console.error(response);
+        navigate('/login', {
+          replace: true,
+          state: {
+            from: location,
+            message: 'Failed to authroize with Google',
+          },
+        });
+      });
+  }, [location]);
+
+  return (
+    <LoginContainer>
+      <LoginCard>
+        <Box sx={{ width: '100%', textAlign: 'center', fontSize: '5em', marginBottom: '10px' }}>
+          <FcGoogle />
+          <LinearProgress />
+        </Box>
+        <Typography>Waiting for Google Sign-in to complete...</Typography>
+      </LoginCard>
+    </LoginContainer>
+  );
 };
 
 export default {

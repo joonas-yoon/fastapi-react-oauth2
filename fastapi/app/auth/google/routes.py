@@ -35,7 +35,7 @@ def google_authorize_url(request: Request):
     return dict(authorization_url=url)
 
 
-@router.get("/google/callback")
+@router.get("/google/token")
 async def google_access_token(request: Request, code: str = ""):
     payload = {
         "client_id": Configs.GOOGLE_CLIENT_ID,
