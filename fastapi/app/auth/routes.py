@@ -4,6 +4,7 @@ from .google.routes import router as get_google_auth_router
 from .libs import auth_backend, current_active_user, fastapi_users
 from .models import User, UserCreate, UserRead, UserUpdate
 
+
 router = APIRouter()
 
 get_auth_router = fastapi_users.get_auth_router(auth_backend)
@@ -18,7 +19,7 @@ routers = [
     (get_register_router, dict(prefix="/auth", tags=["auth"])),
     (get_reset_password_router, dict(prefix="/auth", tags=["auth"])),
     (get_verify_router, dict(prefix="/auth", tags=["auth"])),
-    (get_google_auth_router, dict(prefix="/auth", tags=["auth"])),
+    (get_google_auth_router, dict(prefix="/auth/google", tags=["auth"])),
     (get_users_router, dict(prefix="/users", tags=["users"])),
 ]
 

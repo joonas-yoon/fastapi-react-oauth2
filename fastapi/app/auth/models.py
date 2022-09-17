@@ -14,6 +14,10 @@ class SocialScope(str, Enum):
     google: str = "google"
 
 
+class OAuthAccount(BaseOAuthAccount):
+    pass
+
+
 class UserRead(schemas.BaseUser[PydanticObjectId]):
     pass
 
@@ -27,6 +31,8 @@ class UserUpdate(schemas.BaseUserUpdate):
 
 
 class User(BeanieBaseUser[PydanticObjectId], AppBaseModel):
+    oauth_accounts: List[OAuthAccount] = Field(default_factory=list)
+
     email: EmailStr
     username: Optional[str] = Field(None, description='Username')
     first_name: Optional[str] = Field(None)

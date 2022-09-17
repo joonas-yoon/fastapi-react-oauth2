@@ -142,7 +142,7 @@ const CallbackGoogle = () => {
 
   useEffect(() => {
     customAxios()
-      .get('/auth/google/token' + location.search)
+      .get('/auth/google/callback' + location.search)
       .then(({ data }) => {
         console.log('Recieved data', data);
         login(data.access_token);

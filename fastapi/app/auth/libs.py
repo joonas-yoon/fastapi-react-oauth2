@@ -8,11 +8,11 @@ from fastapi_users.authentication import (AuthenticationBackend,
                                           BearerTransport, JWTStrategy)
 from fastapi_users.db import BeanieUserDatabase, ObjectIDIDMixin
 
-from .models import User
+from .models import OAuthAccount, User
 
 
 async def get_user_db():
-    yield BeanieUserDatabase(User)
+    yield BeanieUserDatabase(User, OAuthAccount)
 
 
 class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
