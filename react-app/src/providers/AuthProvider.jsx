@@ -19,30 +19,39 @@ export const AuthProvider = ({ afterLogin, children }) => {
   const [isAuthenticated, setAuthenticated] = useState(false);
   const location = useLocation();
 
-  const getAuthenticated = async () => {
-    const result = await customAxios()
-      .get('auth/authenticated-route')
-      .then(() => true)
-      .catch(() => false);
-    setAuthenticated(result);
+  const TOKEN_NAME = 'access_token';
+
+  const getToken = () => storage.get(TOKEN_NAME);
+
+  const updateToken = (new_token) => {
+    if (new_token !== null) {
+      storage.set(TOKEN_NAME, new_token);
+    } else {
+      storage.remove(TOKEN_NAME);
+    }
+  };
+
+  const authenticate = async () => {
+    const access_token = getToken();
+    if (access_token) {
+      const result = await customAxios()
+        .get('auth/authenticated-route')
+        .then(() => true)
+        .catch(() => false);
+      setAuthenticated(result);
+      updateToken(result ? access_token : null);
+    }
   };
 
   useEffect(() => {
-    getAuthenticated();
+    authenticate();
   }, [location]);
 
-  const TOKEN_NAME = 'access_token';
-  const token = storage.get(TOKEN_NAME);
-
-  console.log('[Provider] token:', token);
-
-  const storeToken = (accessToken) => {
-    storage.set(TOKEN_NAME, accessToken);
-  };
+  console.log('[Provider] token:', getToken());
 
   const handleLogin = (token) => {
     console.log('handleLogin', token);
-    storeToken(token);
+    updateToken(token);
     const { location } = window;
     const url = new URL(location.href);
     const next = url.searchParams.get('next');
@@ -51,12 +60,12 @@ export const AuthProvider = ({ afterLogin, children }) => {
   };
 
   const handleLogout = () => {
-    console.log('handleLogout', token);
-    storeToken(null);
+    console.log('handleLogout', getToken());
+    updateToken(null);
   };
 
   const value = {
-    token,
+    token: getToken(),
     isAuthenticated,
     login: handleLogin,
     logout: handleLogout,

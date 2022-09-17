@@ -17,6 +17,16 @@ class Storage {
       return initialValue;
     }
   }
+
+  clear(): void {
+    window.localStorage.clear();
+    this.cache.clear();
+  }
+
+  remove(key: string): boolean {
+    window.localStorage.removeItem(key);
+    return this.cache.delete(key);
+  }
 }
 
 const storage = new Storage();
