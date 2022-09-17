@@ -1,4 +1,4 @@
-
+from datetime import datetime
 from typing import Any, Optional
 
 import requests
@@ -20,6 +20,7 @@ class GoogleAuthBackend(AuthenticationBackend):
         user.first_name = userinfo.get('given_name')
         user.last_name = userinfo.get('family_name')
         user.picture = userinfo.get('picture')
+        user.last_login_at = datetime.now()
         await user.save()
         return strategy_response
 
