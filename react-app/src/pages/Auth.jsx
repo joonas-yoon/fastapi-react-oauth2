@@ -1,8 +1,9 @@
-import { Alert, Box } from '@mui/material';
+import { Alert, Box, Stack } from '@mui/material';
 import LoginForm, { LoginCard, LoginContainer, SubTitle, Title } from 'components/LoginForm';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { OAuth } from 'components/Buttons';
 import { customAxios } from 'libs/customAxios';
 import qs from 'qs';
 import { useAuth } from 'providers/AuthProvider';
@@ -12,6 +13,7 @@ export const Login = () => {
     status: null,
     message: '',
   });
+  const [isLoginWithEmail, showEmailLoginForm] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const location = useLocation();
 
@@ -50,6 +52,46 @@ export const Login = () => {
       });
   };
 
+  const onClickGoogleButton = (evt) => {
+    evt.preventDefault();
+    customAxios()
+      .get('/auth/google/authorize')
+      .then((response) => {
+        const { authorization_url } = response.data;
+        window.location.href = authorization_url;
+      })
+      .catch((e) => console.log('log', e));
+  };
+
+  const onClickGitHubButton = (evt) => {
+    evt.preventDefault();
+  };
+
+  const onClickKakaoButton = (evt) => {
+    evt.preventDefault();
+  };
+
+  const onClickEmailButton = (evt) => {
+    evt.preventDefault();
+    showEmailLoginForm(true);
+  };
+
+  const onClickBackButton = (evt) => {
+    evt.preventDefault();
+    showEmailLoginForm(false);
+  };
+
+  const LoginHeader = () => (
+    <Box
+      sx={{
+        marginBottom: '1em',
+      }}
+    >
+      <Title>Login</Title>
+      <SubTitle>Welcome back! Sign in to continue</SubTitle>
+    </Box>
+  );
+
   return (
     <LoginContainer>
       {location.state?.from && (
@@ -63,15 +105,22 @@ export const Login = () => {
         </Alert>
       )}
       <LoginCard>
-        <Box
-          sx={{
-            marginBottom: '1em',
-          }}
-        >
-          <Title>Login</Title>
-          <SubTitle>Welcome back! Sign in to continue</SubTitle>
-        </Box>
-        <LoginForm onSubmit={onSubmit} serverResponse={serverResponse} />
+        <LoginHeader />
+        {isLoginWithEmail ? (
+          <>
+            <LoginForm onSubmit={onSubmit} serverResponse={serverResponse} />
+            <Stack marginTop={1}>
+              <OAuth.BasicButton onClick={onClickBackButton}>Back</OAuth.BasicButton>
+            </Stack>
+          </>
+        ) : (
+          <Stack spacing={1}>
+            <OAuth.GoogleButton onClick={onClickGoogleButton} />
+            <OAuth.GitHubButton onClick={onClickGitHubButton} />
+            <OAuth.KakaoButton onClick={onClickKakaoButton} />
+            <OAuth.EmailButton onClick={onClickEmailButton} />
+          </Stack>
+        )}
       </LoginCard>
     </LoginContainer>
   );
@@ -85,7 +134,31 @@ export const Logout = () => {
   return null;
 };
 
+const CallbackGoogle = () => {
+  console.log('Google');
+  const location = useLocation();
+  if (location.search) {
+    const params = location.search.substring(1).split('&');
+    return (
+      <>
+        {params && (
+          <pre>
+            {params.map((s) => {
+              const [key, value] = s.split('=');
+              return `${key}: ${value}\n`;
+            })}
+          </pre>
+        )}
+      </>
+    );
+  }
+  return 'Failed';
+};
+
 export default {
   Login,
   Logout,
+  Redirects: {
+    Google: CallbackGoogle,
+  },
 };

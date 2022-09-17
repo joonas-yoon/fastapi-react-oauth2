@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Home, Login, Logout, MyPage } from './pages';
+import { Auth, Home, MyPage } from './pages';
 
 import { AuthProvider } from 'providers/AuthProvider';
 import Navbar from 'components/NavBar';
@@ -17,8 +17,11 @@ const App = () => {
         <AuthProvider>
           <Navbar links={links} />
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/logout" element={<Logout />} />
+            <Route path="/login">
+              <Route index element={<Auth.Login />} />
+              <Route path="google" element={<Auth.Redirects.Google />} />
+            </Route>
+            <Route path="/logout" element={<Auth.Logout />} />
             <Route path="/my" element={<MyPage />} />
             <Route path="*" index element={<Home />} />
           </Routes>
