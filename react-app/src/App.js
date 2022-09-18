@@ -21,6 +21,7 @@ const App = () => {
             <Route path="/login">
               <Route index element={<Auth.Login />} />
               <Route path="google" element={<Auth.Redirects.Google />} />
+              <Route path="github" element={<Auth.Redirects.Github />} />
             </Route>
             <Route path="/logout" element={<Auth.Logout />} />
             <Route path="/my" element={<MyPage />} />

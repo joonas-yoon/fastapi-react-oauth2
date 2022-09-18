@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str = None
     GOOGLE_CALLBACK_URL: str = None
 
+    GITHUB_CLIENT_ID: str = None
+    GITHUB_CLIENT_SECRET: str = None
+    GITHUB_CALLBACK_URL: str = None
+
     class Config:
         env_file = get_env_file()
 

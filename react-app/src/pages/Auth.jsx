@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { FcGoogle } from 'react-icons/fc';
+import { FaGithub } from 'react-icons/fa';
 import { OAuth } from 'components/Buttons';
 import { customAxios } from 'libs/customAxios';
 import qs from 'qs';
@@ -54,10 +55,9 @@ export const Login = () => {
       });
   };
 
-  const onClickGoogleButton = (evt) => {
-    evt.preventDefault();
+  const handleOAuth = (link) => {
     customAxios()
-      .get('/auth/google/authorize')
+      .get(link)
       .then((response) => {
         const { authorization_url } = response.data;
         window.location.href = authorization_url;
@@ -65,8 +65,14 @@ export const Login = () => {
       .catch((e) => console.log('log', e));
   };
 
+  const onClickGoogleButton = (evt) => {
+    evt.preventDefault();
+    handleOAuth('/auth/google/authorize');
+  };
+
   const onClickGitHubButton = (evt) => {
     evt.preventDefault();
+    handleOAuth('/auth/github/authorize');
   };
 
   const onClickKakaoButton = (evt) => {
@@ -176,10 +182,50 @@ const CallbackGoogle = () => {
   );
 };
 
+const CallbackGithub = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  useEffect(() => {
+    customAxios()
+      .get('/auth/github/callback' + location.search)
+      .then(({ data }) => {
+        console.log('Recieved data', data);
+        login({
+          token: data.access_token,
+        });
+      })
+      .catch(({ response }) => {
+        console.error(response);
+        navigate('/login', {
+          replace: true,
+          state: {
+            from: location,
+            message: 'Failed to authroize with Github',
+          },
+        });
+      });
+  }, [location]);
+
+  return (
+    <LoginContainer>
+      <Card>
+        <Box sx={{ width: '100%', textAlign: 'center', fontSize: '5em', marginBottom: '10px' }}>
+          <FaGithub />
+          <LinearProgress />
+        </Box>
+        <Typography>Waiting for GitHub Sign-in to complete...</Typography>
+      </Card>
+    </LoginContainer>
+  );
+};
+
 export default {
   Login,
   Logout,
   Redirects: {
     Google: CallbackGoogle,
+    Github: CallbackGithub,
   },
 };
