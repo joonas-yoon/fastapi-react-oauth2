@@ -55,12 +55,17 @@ export const AuthProvider = ({ afterLogin, children }) => {
     const { location } = window;
     const url = new URL(location.href);
     const next = url.searchParams.get('next');
-    navigate(redirectUrl || afterLogin || next || '/');
+    navigate(redirectUrl || next || afterLogin || '/');
   };
 
-  const handleLogout = () => {
+  const handleLogout = (options) => {
+    const { redirectUrl } = options || {};
     console.log('handleLogout', getToken());
     updateToken(null);
+    setAuthenticated(false);
+    if (redirectUrl) {
+      navigate(redirectUrl);
+    }
   };
 
   const value = {

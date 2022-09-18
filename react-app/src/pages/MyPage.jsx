@@ -1,12 +1,14 @@
-import { Avatar, Container, Grid, Typography, Button, Stack } from '@mui/material';
+import { Avatar, Container, Typography, Button, Stack } from '@mui/material';
 import React, { useEffect, useCallback, useState } from 'react';
 
 import { Card } from 'components/Card';
-import { ProtectedRoute } from 'providers/AuthProvider';
+import { ProtectedRoute, useAuth } from 'providers/AuthProvider';
 import { customAxios } from 'libs/customAxios';
 
 const MyPage = () => {
   const [userData, setUserData] = useState(null);
+  const { logout } = useAuth();
+
   useEffect(() => {
     customAxios()
       .get('/users/me')
@@ -49,7 +51,9 @@ const MyPage = () => {
             </Typography>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <Button variant="contained">Logout</Button>
+            <Button variant="contained" onClick={() => logout({ redirectUrl: '/' })}>
+              Logout
+            </Button>
           </div>
         </Stack>
       </Card>

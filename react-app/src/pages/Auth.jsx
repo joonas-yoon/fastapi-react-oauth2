@@ -129,8 +129,10 @@ export const Login = () => {
 };
 
 export const Logout = () => {
+  const { logout } = useAuth();
   const location = useNavigate();
   useEffect(() => {
+    logout();
     location(-1);
   }, [location]);
 };

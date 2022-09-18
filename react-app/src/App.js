@@ -5,9 +5,10 @@ import { AuthProvider } from 'providers/AuthProvider';
 import Navbar from 'components/NavBar';
 
 const links = [
-  { href: '/my', title: 'Go to My Page' },
-  { href: '/login', title: 'Go to login' },
-  { href: '/', title: 'Go to index' },
+  { href: '/', title: 'Home' },
+  { href: '/my', title: 'My Page' },
+  { href: '/login', title: 'Login', credential: true },
+  { href: '/logout', title: 'Logout', credential: false },
 ];
 
 const App = () => {
