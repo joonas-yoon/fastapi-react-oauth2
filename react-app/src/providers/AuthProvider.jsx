@@ -14,7 +14,7 @@ export const useAuth = () => {
   return value;
 };
 
-export const AuthProvider = ({ afterLogin, children }) => {
+export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [isAuthenticated, setAuthenticated] = useState(false);
   const location = useLocation();
@@ -31,38 +31,47 @@ export const AuthProvider = ({ afterLogin, children }) => {
     }
   };
 
-  const authenticate = async () => {
-    const access_token = getToken();
+  const authenticate = async (access_token) => {
     if (access_token) {
-      const result = await customAxios()
+      const result = await customAxios({
+        headers: {
+          access_token,
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
         .get('auth/authenticated-route')
         .then(() => true)
         .catch(() => false);
+      console.log('authenticate result:', result);
       setAuthenticated(result);
       updateToken(result ? access_token : null);
+    } else {
+      setAuthenticated(false);
+      updateToken(null);
     }
   };
 
   useEffect(() => {
-    authenticate();
+    console.log('authenticate');
+    authenticate(getToken());
   }, [location]);
 
   console.log('[Provider] token:', getToken());
 
-  const handleLogin = ({ token, redirectUrl }) => {
-    console.log('handleLogin', token);
-    updateToken(token);
+  const handleLogin = async ({ token, redirectUrl }) => {
+    console.log('handleLogin', token, redirectUrl);
+    await authenticate(token);
     const { location } = window;
     const url = new URL(location.href);
-    const next = url.searchParams.get('next');
-    navigate(redirectUrl || next || afterLogin || '/');
+    const next = url.searchParams.get('next') || storage.get('login_to', '') || '';
+    storage.remove('login_to');
+    navigate(redirectUrl || next || '/');
   };
 
-  const handleLogout = (options) => {
+  const handleLogout = async (options) => {
     const { redirectUrl } = options || {};
     console.log('handleLogout', getToken());
-    updateToken(null);
-    setAuthenticated(false);
+    await authenticate(null);
     if (redirectUrl) {
       navigate(redirectUrl);
     }
@@ -89,6 +98,7 @@ export const ProtectedRoute = ({ redirectTo, children }) => {
     const targetUrl = new URL(redirectTo || '/', origin);
     const next = location?.pathname + location?.search + location?.hash;
     targetUrl.searchParams.append('next', encodeURI(next));
+    storage.set('login_to', next);
     const nextUrl = targetUrl.toString().replace(targetUrl.origin, '');
     return <Navigate to={nextUrl || '/'} replace state={{ from: location }} />;
   }

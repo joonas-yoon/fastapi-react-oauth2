@@ -149,7 +149,6 @@ const CallbackGoogle = () => {
         console.log('Recieved data', data);
         login({
           token: data.access_token,
-          redirectUrl: '/my',
         });
       })
       .catch(({ response }) => {
