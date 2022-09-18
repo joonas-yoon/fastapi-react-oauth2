@@ -9,19 +9,15 @@ from fastapi_users.authentication.strategy import Strategy
 from ..exceptions import BadCredentialException
 from ..libs import bearer_transport, get_jwt_strategy
 from ..models import User
-from .constants import GOOGLE_USERINFO_API
+from .constants import GOOGLE_USERINFO_URL
 
 
 class GoogleAuthBackend(AuthenticationBackend):
     async def login(self, strategy: Strategy, user: User, response: Response) -> Any:
         strategy_response = await super().login(strategy, user, response)
         token = self.get_google_access_token(user)
-        userinfo = get_profile_from_google(token)
-        user.first_name = userinfo.get('given_name')
-        user.last_name = userinfo.get('family_name')
-        user.picture = userinfo.get('picture')
-        user.last_login_at = datetime.now()
-        await user.save()
+        profile = get_profile(token)
+        await update_profile(user, profile).save()
         return strategy_response
 
     def get_google_access_token(self, user: User) -> Optional[str]:
@@ -31,13 +27,24 @@ class GoogleAuthBackend(AuthenticationBackend):
         return None
 
 
-def get_profile_from_google(access_token: str) -> dict:
-    response = requests.get(url=GOOGLE_USERINFO_API,
+def get_profile(access_token: str) -> dict:
+    response = requests.get(url=GOOGLE_USERINFO_URL,
                             params={'access_token': access_token})
     if not response.ok:
         raise BadCredentialException(
             'Failed to get user information from Google.')
     return response.json()
+
+
+def update_profile(user: User, profile: dict) -> User:
+    if user.first_name == None:
+        user.first_name = profile.get('given_name')
+    if user.last_name == None:
+        user.last_name = profile.get('family_name')
+    if user.picture == None:
+        user.picture = profile.get('picture')
+    user.last_login_at = datetime.now()
+    return user
 
 
 auth_backend_google = GoogleAuthBackend(

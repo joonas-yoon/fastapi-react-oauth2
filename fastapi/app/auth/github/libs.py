@@ -17,10 +17,7 @@ class GithubAuthBackend(AuthenticationBackend):
         strategy_response = await super().login(strategy, user, response)
         token = self.get_google_access_token(user)
         profile = get_profile(token)
-        user.first_name = profile.get('first_name')
-        user.last_name = profile.get('last_name')
-        user.picture = profile.get('avatar_url')
-        user.last_login_at = datetime.now()
+        await update_profile(user, profile).save()
         await user.save()
         return strategy_response
 
@@ -47,6 +44,17 @@ def get_profile(access_token: str) -> dict:
     except:
         pass
     return profile
+
+
+def update_profile(user: User, profile: dict) -> User:
+    if user.first_name == None:
+        user.first_name = profile.get('first_name')
+    if user.last_name == None:
+        user.last_name = profile.get('last_name')
+    if user.picture == None:
+        user.picture = profile.get('avatar_url')
+    user.last_login_at = datetime.now()
+    return user
 
 
 auth_backend_github = GithubAuthBackend(
