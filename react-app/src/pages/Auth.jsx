@@ -3,13 +3,13 @@ import LoginForm, { LoginContainer, SubTitle, Title } from 'components/LoginForm
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { FcGoogle } from 'react-icons/fc';
+import { Card } from 'components/Card';
 import { FaGithub } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
 import { OAuth } from 'components/Buttons';
 import { customAxios } from 'libs/customAxios';
 import qs from 'qs';
 import { useAuth } from 'providers/AuthProvider';
-import { Card } from 'components/Card';
 
 export const Login = () => {
   const [serverResponse, setServerResponse] = useState({
@@ -143,14 +143,14 @@ export const Logout = () => {
   }, [location]);
 };
 
-const CallbackGoogle = () => {
+const CallbackOAuth = ({ api_callback_url, icon, children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { login } = useAuth();
 
   useEffect(() => {
     customAxios()
-      .get('/auth/google/callback' + location.search)
+      .get(api_callback_url + location.search)
       .then(({ data }) => {
         console.log('Recieved data', data);
         login({
@@ -173,51 +173,28 @@ const CallbackGoogle = () => {
     <LoginContainer>
       <Card>
         <Box sx={{ width: '100%', textAlign: 'center', fontSize: '5em', marginBottom: '10px' }}>
-          <FcGoogle />
+          {icon}
           <LinearProgress />
         </Box>
-        <Typography>Waiting for Google Sign-in to complete...</Typography>
+        {children}
       </Card>
     </LoginContainer>
   );
 };
 
-const CallbackGithub = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { login } = useAuth();
-
-  useEffect(() => {
-    customAxios()
-      .get('/auth/github/callback' + location.search)
-      .then(({ data }) => {
-        console.log('Recieved data', data);
-        login({
-          token: data.access_token,
-        });
-      })
-      .catch(({ response }) => {
-        console.error(response);
-        navigate('/login', {
-          replace: true,
-          state: {
-            from: location,
-            message: 'Failed to authroize with Github',
-          },
-        });
-      });
-  }, [location]);
-
+const CallbackGoogle = () => {
   return (
-    <LoginContainer>
-      <Card>
-        <Box sx={{ width: '100%', textAlign: 'center', fontSize: '5em', marginBottom: '10px' }}>
-          <FaGithub />
-          <LinearProgress />
-        </Box>
-        <Typography>Waiting for GitHub Sign-in to complete...</Typography>
-      </Card>
-    </LoginContainer>
+    <CallbackOAuth api_callback_url="/auth/google/callback" icon={<FcGoogle />}>
+      <Typography>Waiting for Google Sign-in to complete...</Typography>
+    </CallbackOAuth>
+  );
+};
+
+const CallbackGithub = () => {
+  return (
+    <CallbackOAuth api_callback_url="/auth/github/callback" icon={<FaGithub />}>
+      <Typography>Waiting for GitHub Sign-in to complete...</Typography>
+    </CallbackOAuth>
   );
 };
 
