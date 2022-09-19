@@ -7,6 +7,7 @@ import { Card } from 'components/Card';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { OAuth } from 'components/Buttons';
+import { SiKakao } from 'react-icons/si';
 import { customAxios } from 'libs/customAxios';
 import qs from 'qs';
 import { useAuth } from 'providers/AuthProvider';
@@ -77,6 +78,7 @@ export const Login = () => {
 
   const onClickKakaoButton = (evt) => {
     evt.preventDefault();
+    handleOAuth('/auth/kakao/authorize');
   };
 
   const onClickEmailButton = (evt) => {
@@ -198,11 +200,20 @@ const CallbackGithub = () => {
   );
 };
 
+const CallbackKakao = () => {
+  return (
+    <CallbackOAuth api_callback_url="/auth/kakao/callback" icon={<SiKakao />}>
+      <Typography>Waiting for Kakao Sign-in to complete...</Typography>
+    </CallbackOAuth>
+  );
+};
+
 export default {
   Login,
   Logout,
   Redirects: {
     Google: CallbackGoogle,
     Github: CallbackGithub,
+    Kakao: CallbackKakao,
   },
 };

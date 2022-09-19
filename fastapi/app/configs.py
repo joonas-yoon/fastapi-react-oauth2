@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     GITHUB_CLIENT_SECRET: str = None
     GITHUB_CALLBACK_URL: str = None
 
+    KAKAO_CLIENT_ID: str = None
+    KAKAO_CLIENT_SECRET: str = None
+    KAKAO_CALLBACK_URL: str = None
+
     class Config:
         env_file = get_env_file()
 
