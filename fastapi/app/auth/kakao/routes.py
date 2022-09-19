@@ -2,7 +2,7 @@ from app.configs import Configs
 
 from ..libs import fastapi_users
 from .client import KakaoOAuth2
-from .libs import auth_backend
+from .backend import auth_backend
 
 kakao_oauth_client = KakaoOAuth2(
     client_id=Configs.KAKAO_CLIENT_ID,

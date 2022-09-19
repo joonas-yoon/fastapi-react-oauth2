@@ -3,8 +3,10 @@ from app.configs import Configs
 from httpx_oauth.clients.google import GoogleOAuth2
 
 from ..libs import fastapi_users
-from .constants import GOOGLE_SCOPE_EMAIL, GOOGLE_SCOPE_PROFILE
-from .libs import auth_backend
+from .backend import auth_backend
+
+GOOGLE_SCOPE_PROFILE = "https://www.googleapis.com/auth/userinfo.profile"
+GOOGLE_SCOPE_EMAIL = "https://www.googleapis.com/auth/userinfo.email"
 
 google_oauth_client = GoogleOAuth2(
     client_id=Configs.GOOGLE_CLIENT_ID,

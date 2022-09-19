@@ -6,7 +6,8 @@ from ..base.libs import OAuthBackend
 from ..exceptions import BadCredentialException
 from ..libs import bearer_transport, get_jwt_strategy
 from ..models import User
-from .constants import KAKAO_USERINFO_URL
+
+KAKAO_USERINFO_URL = 'https://kapi.kakao.com/v2/user/me'
 
 
 class KakaoAuthBackend(OAuthBackend):

@@ -4,7 +4,8 @@ from ..base.libs import OAuthBackend
 from ..exceptions import BadCredentialException
 from ..libs import bearer_transport, get_jwt_strategy
 from ..models import User
-from .constants import GITHUB_USERINFO_URL
+
+GITHUB_USERINFO_URL = 'https://api.github.com/user'
 
 
 class GithubAuthBackend(OAuthBackend):

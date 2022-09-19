@@ -3,7 +3,7 @@ from app.configs import Configs
 from httpx_oauth.clients.github import GitHubOAuth2
 
 from ..libs import fastapi_users
-from .libs import auth_backend
+from .backend import auth_backend
 
 github_oauth_client = GitHubOAuth2(
     client_id=Configs.GITHUB_CLIENT_ID,
