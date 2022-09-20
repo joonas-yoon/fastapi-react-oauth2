@@ -145,7 +145,7 @@ export const Logout = () => {
   }, [location]);
 };
 
-const CallbackOAuth = ({ api_callback_url, icon, children }) => {
+const CallbackOAuth = ({ api_callback_url, icon, children, error_message }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -165,7 +165,7 @@ const CallbackOAuth = ({ api_callback_url, icon, children }) => {
           replace: true,
           state: {
             from: location,
-            message: 'Failed to authroize with Google',
+            message: error_message,
           },
         });
       });
@@ -186,7 +186,11 @@ const CallbackOAuth = ({ api_callback_url, icon, children }) => {
 
 const CallbackGoogle = () => {
   return (
-    <CallbackOAuth api_callback_url="/auth/google/callback" icon={<FcGoogle />}>
+    <CallbackOAuth
+      api_callback_url="/auth/google/callback"
+      icon={<FcGoogle />}
+      error_message="Failed to authroize with Google"
+    >
       <Typography>Waiting for Google Sign-in to complete...</Typography>
     </CallbackOAuth>
   );
@@ -194,7 +198,11 @@ const CallbackGoogle = () => {
 
 const CallbackGithub = () => {
   return (
-    <CallbackOAuth api_callback_url="/auth/github/callback" icon={<FaGithub />}>
+    <CallbackOAuth
+      api_callback_url="/auth/github/callback"
+      icon={<FaGithub />}
+      error_message="Failed to authroize with GitHub"
+    >
       <Typography>Waiting for GitHub Sign-in to complete...</Typography>
     </CallbackOAuth>
   );
@@ -202,7 +210,11 @@ const CallbackGithub = () => {
 
 const CallbackKakao = () => {
   return (
-    <CallbackOAuth api_callback_url="/auth/kakao/callback" icon={<SiKakao />}>
+    <CallbackOAuth
+      api_callback_url="/auth/kakao/callback"
+      icon={<SiKakao />}
+      error_message="Failed to authroize with Kakao"
+    >
       <Typography>Waiting for Kakao Sign-in to complete...</Typography>
     </CallbackOAuth>
   );
