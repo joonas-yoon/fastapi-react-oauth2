@@ -58,4 +58,4 @@ class KakaoOAuth2(BaseOAuth2[KakaoOAuth2AuthorizeParams]):
             account_info = cast(Dict[str, Any], response.json())
             kakao_account = account_info.get('kakao_account')
 
-            return account_info.get('id'), kakao_account.get('email')
+            return str(account_info.get('id')), kakao_account.get('email')
