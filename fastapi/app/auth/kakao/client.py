@@ -3,13 +3,14 @@ from typing import Any, Dict, List, Optional, Tuple, cast
 import json
 from httpx_oauth.errors import GetIdEmailError
 from httpx_oauth.oauth2 import BaseOAuth2
-from httpx_oauth.typing import TypedDict
 
 AUTHORIZE_ENDPOINT = "https://kauth.kakao.com/oauth/authorize"
 ACCESS_TOKEN_ENDPOINT = "https://kauth.kakao.com/oauth/token"
+REFRESH_TOKEN_ENDPOINT = ACCESS_TOKEN_ENDPOINT
+REVOKE_TOKEN_ENDPOINT = "https://kapi.kakao.com/v1/user/unlink"
 PROFILE_ENDPOINT = "https://kapi.kakao.com/v2/user/me"
 BASE_SCOPES = ["account_email"]
-BASE_PROFILE_SCOPES = ["kakao_account.email"]
+PROFILE_PROPERTIES = ["kakao_account.email"]
 
 LOGO_SVG = """
 <svg stroke-width="0" role="img" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
@@ -18,12 +19,7 @@ LOGO_SVG = """
 """
 
 
-class KakaoOAuth2AuthorizeParams(TypedDict, total=False):
-    login: str
-    allow_signup: bool
-
-
-class KakaoOAuth2(BaseOAuth2[KakaoOAuth2AuthorizeParams]):
+class KakaoOAuth2(BaseOAuth2[Dict[str, Any]]):
     display_name = "Kakao"
     logo_svg = LOGO_SVG
 
@@ -39,6 +35,8 @@ class KakaoOAuth2(BaseOAuth2[KakaoOAuth2AuthorizeParams]):
             client_secret,
             AUTHORIZE_ENDPOINT,
             ACCESS_TOKEN_ENDPOINT,
+            refresh_token_endpoint=REFRESH_TOKEN_ENDPOINT,
+            revoke_token_endpoint=REVOKE_TOKEN_ENDPOINT,
             name=name,
             base_scopes=scopes,
         )
@@ -47,7 +45,7 @@ class KakaoOAuth2(BaseOAuth2[KakaoOAuth2AuthorizeParams]):
         async with self.get_httpx_client() as client:
             response = await client.post(
                 PROFILE_ENDPOINT,
-                params={"property_keys": json.dumps(BASE_PROFILE_SCOPES)},
+                params={"property_keys": json.dumps(PROFILE_PROPERTIES)},
                 headers={**self.request_headers,
                          "Authorization": f"Bearer {token}"},
             )
@@ -57,5 +55,8 @@ class KakaoOAuth2(BaseOAuth2[KakaoOAuth2AuthorizeParams]):
 
             account_info = cast(Dict[str, Any], response.json())
             kakao_account = account_info.get('kakao_account')
+
+            if kakao_account is None or kakao_account.get('email') is None:
+                raise GetIdEmailError(response.json())
 
             return str(account_info.get('id')), kakao_account.get('email')
