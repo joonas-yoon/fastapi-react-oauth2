@@ -6,6 +6,7 @@ import { FcGoogle } from 'react-icons/fc';
 import React from 'react';
 import { SiKakao } from 'react-icons/si';
 import { TinyColor } from '@ctrl/tinycolor';
+import { LogoNaver } from './icons/Naver';
 
 const BasicButton = ({ children, sx, ...others }) => (
   <Button
@@ -20,10 +21,10 @@ const BasicButton = ({ children, sx, ...others }) => (
   </Button>
 );
 
-const ColoredAuthButton = styled(BasicButton)(({ theme, backgroundcolor }) => {
+const ColoredAuthButton = styled(BasicButton)(({ theme, foregroundcolor, backgroundcolor }) => {
   const baseBackgroundColor = new TinyColor(backgroundcolor);
   return {
-    color: theme.palette.getContrastText(backgroundcolor),
+    color: foregroundcolor || theme.palette.getContrastText(backgroundcolor),
     borderColor: 'transparent',
     backgroundColor: baseBackgroundColor.toHexString(),
     '&:hover': {
@@ -51,6 +52,17 @@ const SignInWithKakaoButton = ({ ...props }) => (
   </ColoredAuthButton>
 );
 
+const SignInWithNaverButton = ({ ...props }) => (
+  <ColoredAuthButton
+    startIcon={<LogoNaver invert={true} />}
+    foregroundcolor="#ffffff"
+    backgroundcolor={Colors.Button.Naver}
+    {...props}
+  >
+    Sign in with NAVER
+  </ColoredAuthButton>
+);
+
 const SignInWithEmailButton = ({ ...props }) => (
   <ColoredAuthButton startIcon={<IoMail />} backgroundcolor={Colors.Button.Email} {...props}>
     Sign in with Email
@@ -62,6 +74,7 @@ export const OAuth = {
   GoogleButton: SignInWithGoogleButton,
   GitHubButton: SignInWithGitHubButton,
   KakaoButton: SignInWithKakaoButton,
+  NaverButton: SignInWithNaverButton,
   EmailButton: SignInWithEmailButton,
 };
 

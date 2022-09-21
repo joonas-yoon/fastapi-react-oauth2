@@ -7,10 +7,11 @@ import { Card } from 'components/Card';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { OAuth } from 'components/Buttons';
-import { SiKakao } from 'react-icons/si';
+import { SiKakao, SiNaver } from 'react-icons/si';
 import { customAxios } from 'libs/customAxios';
 import qs from 'qs';
 import { useAuth } from 'providers/AuthProvider';
+import Colors from 'components/colors';
 
 export const Login = () => {
   const [serverResponse, setServerResponse] = useState({
@@ -81,6 +82,11 @@ export const Login = () => {
     handleOAuth('/auth/kakao/authorize');
   };
 
+  const onClickNaverButton = (evt) => {
+    evt.preventDefault();
+    handleOAuth('/auth/naver/authorize');
+  };
+
   const onClickEmailButton = (evt) => {
     evt.preventDefault();
     showEmailLoginForm(true);
@@ -128,6 +134,7 @@ export const Login = () => {
             <OAuth.GoogleButton onClick={onClickGoogleButton} />
             <OAuth.GitHubButton onClick={onClickGitHubButton} />
             <OAuth.KakaoButton onClick={onClickKakaoButton} />
+            <OAuth.NaverButton onClick={onClickNaverButton} />
             <OAuth.EmailButton onClick={onClickEmailButton} />
           </Stack>
         )}
@@ -220,6 +227,18 @@ const CallbackKakao = () => {
   );
 };
 
+const CallbackNaver = () => {
+  return (
+    <CallbackOAuth
+      api_callback_url="/auth/naver/callback"
+      icon={<SiNaver style={{ fill: Colors.Button.Naver }} />}
+      error_message="Failed to authroize with NAVER"
+    >
+      <Typography>Waiting for NAVER Sign-in to complete...</Typography>
+    </CallbackOAuth>
+  );
+};
+
 export default {
   Login,
   Logout,
@@ -227,5 +246,6 @@ export default {
     Google: CallbackGoogle,
     Github: CallbackGithub,
     Kakao: CallbackKakao,
+    Naver: CallbackNaver,
   },
 };
