@@ -231,7 +231,7 @@ const CallbackNaver = () => {
   return (
     <CallbackOAuth
       api_callback_url="/auth/naver/callback"
-      icon={<SiNaver style={{ fill: Colors.Button.Naver }} />}
+      icon={<SiNaver style={{ fill: Colors.Brands.Naver }} />}
       error_message="Failed to authroize with NAVER"
     >
       <Typography>Waiting for NAVER Sign-in to complete...</Typography>

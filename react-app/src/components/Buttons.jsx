@@ -41,13 +41,13 @@ const SignInWithGoogleButton = ({ ...props }) => (
 );
 
 const SignInWithGitHubButton = ({ ...props }) => (
-  <ColoredAuthButton startIcon={<IoLogoGithub />} backgroundcolor={Colors.Button.GitHub} {...props}>
+  <ColoredAuthButton startIcon={<IoLogoGithub />} backgroundcolor={Colors.Brands.GitHub} {...props}>
     Sign in with GitHub
   </ColoredAuthButton>
 );
 
 const SignInWithKakaoButton = ({ ...props }) => (
-  <ColoredAuthButton startIcon={<SiKakao />} backgroundcolor={Colors.Button.Kakao} {...props}>
+  <ColoredAuthButton startIcon={<SiKakao />} backgroundcolor={Colors.Brands.Kakao} {...props}>
     Sign in with Kakao
   </ColoredAuthButton>
 );
@@ -56,7 +56,7 @@ const SignInWithNaverButton = ({ ...props }) => (
   <ColoredAuthButton
     startIcon={<LogoNaver invert={true} />}
     foregroundcolor="#ffffff"
-    backgroundcolor={Colors.Button.Naver}
+    backgroundcolor={Colors.Brands.Naver}
     {...props}
   >
     Sign in with NAVER
@@ -64,7 +64,7 @@ const SignInWithNaverButton = ({ ...props }) => (
 );
 
 const SignInWithEmailButton = ({ ...props }) => (
-  <ColoredAuthButton startIcon={<IoMail />} backgroundcolor={Colors.Button.Email} {...props}>
+  <ColoredAuthButton startIcon={<IoMail />} backgroundcolor={Colors.Email} {...props}>
     Sign in with Email
   </ColoredAuthButton>
 );
