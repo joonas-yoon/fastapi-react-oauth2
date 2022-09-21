@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 from .google.routes import google_oauth_router
 from .github.routes import github_oauth_router
 from .kakao.routes import kakao_oauth_router
+from .naver.routes import naver_oauth_router
 from .libs import auth_backend, current_active_user, fastapi_users
 from .models import User, UserCreate, UserRead, UserUpdate
 
@@ -24,6 +25,7 @@ routers = [
     (google_oauth_router, dict(prefix="/auth/google", tags=["auth"])),
     (github_oauth_router, dict(prefix="/auth/github", tags=["auth"])),
     (kakao_oauth_router, dict(prefix="/auth/kakao", tags=["auth"])),
+    (naver_oauth_router, dict(prefix="/auth/naver", tags=["auth"])),
     (get_users_router, dict(prefix="/users", tags=["users"])),
 ]
 
